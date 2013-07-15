@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Depot</id>
+    <version>1.2.7</version>
+    <title>Depot</title>
+    <authors>Daniel Crenna</authors>
+    <owners>Daniel Crenna</owners>
+    <licenseUrl>https://github.com/danielcrenna/depot/blob/master/LICENSE</licenseUrl>
+    <projectUrl>http://github.com/danielcrenna/depot</projectUrl>
+    <iconUrl>http://apitize.com.s3.amazonaws.com/logo_depot.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A common caching interface with support for graphing dependencies.</description>
+    <summary>A common caching interface with support for graphing dependencies.</summary>
+    <releaseNotes />
+    <copyright />
+    <language>en-US</language>
+    <tags>cache web dependency graph</tags>
+    <dependencies>
+      <dependency id="container" version="1.0.1" />
+    </dependencies>
+  </metadata>
+</package>
