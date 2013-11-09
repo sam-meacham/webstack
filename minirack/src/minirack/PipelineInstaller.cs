@@ -6,7 +6,8 @@ using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using minirack;
 using minirack.Extensions;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(PipelineInstaller), "Install")]
+[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(PipelineInstaller), "PreAppInit")]
+[assembly: WebActivatorEx.PostApplicationStartMethod(typeof(PipelineInstaller), "PostAppInit")]
 
 namespace minirack
 {
@@ -15,7 +16,7 @@ namespace minirack
     /// </summary>
     public class PipelineInstaller
     {
-        public static void Install()
+        public static void PreAppInit()
         {
             var disableValue = ConfigurationManager.AppSettings["minirack_Bypass"];
             bool disable;
@@ -28,6 +29,11 @@ namespace minirack
             RegisterPipelineModules();
         }
 
+	    public static void PostAppInit()
+	    {
+			RunPostStartMethods();
+	    }
+
         private static void RegisterPipelineModules()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -36,8 +42,23 @@ namespace minirack
             var moduleOrder = modules.Select(m => new {m, i = m.GetAttribute<PipelineAttribute>().Order}).OrderBy(o => o.i);
             foreach (var order in moduleOrder)
             {
+				// TODO: When/why is BuildManager.AddReferencedAssembly(asm); required?
                 DynamicModuleUtility.RegisterModule(order.m);
             }
         }
+
+        private static void RunPostStartMethods()
+        {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var types = assemblies.SelectMany(assembly => assembly.GetTypes());
+            var postStartTypes = types.Where(t => t.HasAttribute<PostAppStartAttribute>());
+            var moduleOrder = postStartTypes.Select(m => new {m, i = m.GetAttribute<PostAppStartAttribute>().Order}).OrderBy(o => o.i);
+            foreach (var order in moduleOrder)
+            {
+                DynamicModuleUtility.RegisterModule(order.m);
+            }
+        }
+
+
     }
 }
