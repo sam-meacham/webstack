@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using minirack;
@@ -34,10 +36,28 @@ namespace minirack
 			RunPostStartMethods();
 	    }
 
+		/// <summary>
+		/// returns all assemblies in the current AppDomain that don't start
+		/// with an obvious ms name (mscorlib, system, microsoft)
+		/// </summary>
+	    public static IEnumerable<Assembly> GetNonSystemTypes()
+	    {
+		    var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+			    .Where(asm => !asm.FullName.StartsWith("mscorlib")
+								&& !asm.FullName.StartsWith("System.")
+								&& !asm.FullName.StartsWith("Microsoft."));
+		    return assemblies;
+	    }
+
+	    public static IEnumerable<Type> GetUserTypes()
+	    {
+			var types = GetNonSystemTypes().SelectMany(asm => asm.GetTypes());
+		    return types;
+	    }
+
         private static void RegisterPipelineModules()
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var types = assemblies.SelectMany(assembly => assembly.GetTypes());
+	        var types = GetUserTypes();
             var modules = types.Where(t => t.HasAttribute<PipelineAttribute>() && t.Implements<IHttpModule>());
             var moduleOrder = modules.Select(m => new {m, i = m.GetAttribute<PipelineAttribute>().Order}).OrderBy(o => o.i);
             foreach (var order in moduleOrder)
@@ -49,8 +69,7 @@ namespace minirack
 
         private static void RunPostStartMethods()
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var types = assemblies.SelectMany(assembly => assembly.GetTypes());
+	        var types = GetUserTypes();
             var postStartTypes = types.Where(t => t.HasAttribute<PostAppStartAttribute>());
             var moduleOrder = postStartTypes.Select(m => new {m, i = m.GetAttribute<PostAppStartAttribute>().Order}).OrderBy(o => o.i);
             foreach (var order in moduleOrder)
