@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
@@ -40,20 +39,22 @@ namespace minirack
 		/// returns all assemblies in the current AppDomain that don't start
 		/// with an obvious ms name (mscorlib, system, microsoft)
 		/// </summary>
-	    public static IEnumerable<Assembly> GetNonSystemTypes()
+	    public static Assembly[] GetNonSystemTypes()
 	    {
 		    var assemblies = AppDomain.CurrentDomain.GetAssemblies()
 			    .Where(asm => !asm.FullName.StartsWith("mscorlib")
 								&& !asm.FullName.StartsWith("System.")
-								&& !asm.FullName.StartsWith("Microsoft."));
+								&& !asm.FullName.StartsWith("Microsoft."))
+				.ToArray();
 		    return assemblies;
 	    }
 
-	    public static IEnumerable<Type> GetUserTypes(Predicate<Type> where = null)
+	    public static Type[] GetUserTypes(Predicate<Type> where = null)
 	    {
 		    var types = GetNonSystemTypes()
 			    .SelectMany(asm => asm.GetTypes())
-				.Where(t => where == null || where(t));
+			    .Where(t => where == null || where(t))
+			    .ToArray();
 		    return types;
 	    }
 
@@ -73,13 +74,17 @@ namespace minirack
         {
 	        var types = GetUserTypes();
             var postStartTypes = types.Where(t => t.HasAttribute<PostAppStartAttribute>());
-            var moduleOrder = postStartTypes.Select(m => new {m, i = m.GetAttribute<PostAppStartAttribute>().Order}).OrderBy(o => o.i);
-            foreach (var order in moduleOrder)
+	        var moduleOrder = postStartTypes
+				.Select(t => new { t, att = t.GetAttribute<PostAppStartAttribute>() })
+				.OrderBy(o => o.att.Order);
+            foreach (var m in moduleOrder)
             {
-                DynamicModuleUtility.RegisterModule(order.m);
+	            MethodInfo initMethod = m.t.GetMethod(m.att.InitMethodName);
+				if (initMethod == null)
+					throw new Exception("No method found " + m.att.InitMethodName + " in type " + m.t.FullName + ",");
+	            initMethod.Invoke(null, null);
             }
         }
-
 
     }
 }
