@@ -12,6 +12,8 @@ application.
 ### Usage
 
 ```csharp
+using minirack;
+
 [Pipeline]
 public class MyModule : IHttpModule
 {
@@ -20,3 +22,30 @@ public class MyModule : IHttpModule
 ```
 
 _This library works on AppHarbor._
+
+### Bypass in web.config
+
+```xml
+<configuration>
+	<appSettings>
+		<add key="minirack_Bypass" value="true" />
+	</appSettings>
+</configuration>
+```
+
+### [PostAppStart] usage
+
+```csharp
+using minirack;
+
+[PostAppStart]
+public class AnyClass
+{
+	public static void PostAppStart()
+	{
+		// Will be called once after the HttpApplication is started
+		// (one time static init, warmup, caching, whatever)
+	}
+}
+```
+
