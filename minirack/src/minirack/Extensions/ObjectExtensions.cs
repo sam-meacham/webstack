@@ -44,12 +44,12 @@ namespace minirack.Extensions
 
         public static bool HasAttribute<T>(this Type type) where T : Attribute
         {
-            return type.GetCustomAttributes(typeof(T), true).Length > 0;
+            return type.GetCustomAttributes(typeof(T), inherit: true).Length > 0;
         }
 
         public static T GetAttribute<T>(this Type type) where T : Attribute
         {
-            return type.GetCustomAttributes(typeof (T), true)[0] as T;
+            return type.GetCustomAttributes(typeof (T), inherit: true)[0] as T;
         }
     }
 }
