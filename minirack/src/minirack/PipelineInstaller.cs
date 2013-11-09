@@ -49,9 +49,11 @@ namespace minirack
 		    return assemblies;
 	    }
 
-	    public static IEnumerable<Type> GetUserTypes()
+	    public static IEnumerable<Type> GetUserTypes(Predicate<Type> where = null)
 	    {
-			var types = GetNonSystemTypes().SelectMany(asm => asm.GetTypes());
+		    var types = GetNonSystemTypes()
+			    .SelectMany(asm => asm.GetTypes())
+				.Where(t => where == null || where(t));
 		    return types;
 	    }
 
