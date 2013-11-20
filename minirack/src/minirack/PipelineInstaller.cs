@@ -19,20 +19,27 @@ namespace minirack
     {
         public static void PreAppInit()
         {
-            var disableValue = ConfigurationManager.AppSettings["minirack_Bypass"];
-            bool disable;
-            bool.TryParse(disableValue, out disable);
-            if (disable) return;
+            if (Disabled()) return;
             if(AppHarbor.IsHosting())
             {
                 DynamicModuleUtility.RegisterModule(typeof(AppHarborModule));    
             }
             RegisterPipelineModules();
+			RunPreStartMethods();
         }
 
 	    public static void PostAppInit()
 	    {
+            if (Disabled()) return;
 			RunPostStartMethods();
+	    }
+
+	    public static bool Disabled()
+	    {
+            var disableValue = ConfigurationManager.AppSettings["minirack_Bypass"];
+            bool disable;
+            bool.TryParse(disableValue, out disable);
+		    return disable;
 	    }
 
 		/// <summary>
@@ -61,8 +68,8 @@ namespace minirack
         private static void RegisterPipelineModules()
         {
 	        var types = GetUserTypes();
-            var modules = types.Where(t => t.HasAttribute<PipelineAttribute>() && t.Implements<IHttpModule>());
-            var moduleOrder = modules.Select(m => new {m, i = m.GetAttribute<PipelineAttribute>().Order}).OrderBy(o => o.i);
+            var modules = types.Where(t => t.HasAttribute<PipelineAttribute>(inherit: false) && t.Implements<IHttpModule>());
+            var moduleOrder = modules.Select(m => new {m, i = m.GetAttribute<PipelineAttribute>(inherit: false).Order}).OrderBy(o => o.i);
             foreach (var order in moduleOrder)
             {
 				// TODO: When/why is BuildManager.AddReferencedAssembly(asm); required?
@@ -70,18 +77,36 @@ namespace minirack
             }
         }
 
+        private static void RunPreStartMethods()
+        {
+	        var types = GetUserTypes();
+            var preStartTypes = types.Where(t => t.HasAttribute<PreAppStartAttribute>(inherit: false));
+	        var moduleOrder = preStartTypes
+				.Select(t => new { t, att = t.GetAttribute<PreAppStartAttribute>(inherit: false) })
+				.OrderBy(o => o.att.Order);
+            foreach (var m in moduleOrder)
+            {
+	            MethodInfo initMethod = m.t.GetMethod(m.att.InitMethodName);
+	            if (initMethod == null)
+		            throw new Exception("No method found " + m.att.InitMethodName + " in type " + m.t.FullName + ","
+										+ " (it's being called due to the [PreAppStart] attribute on the type");
+	            initMethod.Invoke(null, null);
+            }
+        }
+
         private static void RunPostStartMethods()
         {
 	        var types = GetUserTypes();
-            var postStartTypes = types.Where(t => t.HasAttribute<PostAppStartAttribute>());
+            var postStartTypes = types.Where(t => t.HasAttribute<PostAppStartAttribute>(inherit: false));
 	        var moduleOrder = postStartTypes
-				.Select(t => new { t, att = t.GetAttribute<PostAppStartAttribute>() })
+				.Select(t => new { t, att = t.GetAttribute<PostAppStartAttribute>(inherit: false) })
 				.OrderBy(o => o.att.Order);
             foreach (var m in moduleOrder)
             {
 	            MethodInfo initMethod = m.t.GetMethod(m.att.InitMethodName);
 				if (initMethod == null)
-					throw new Exception("No method found " + m.att.InitMethodName + " in type " + m.t.FullName + ",");
+		            throw new Exception("No method found " + m.att.InitMethodName + " in type " + m.t.FullName + ","
+										+ " (it's being called due to the [PostAppStart] attribute on the type");
 	            initMethod.Invoke(null, null);
             }
         }

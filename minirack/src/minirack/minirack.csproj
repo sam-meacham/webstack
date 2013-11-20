@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="AppHarbor.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="PreAppStartAttribute.cs" />
     <Compile Include="PostAppStartAttribute.cs" />
     <Compile Include="PipelineAttribute.cs" />
     <Compile Include="PipelineInstaller.cs" />

@@ -42,14 +42,14 @@ namespace minirack.Extensions
             return instance.GetType().ImplementsGeneric(targetType);
         }
 
-        public static bool HasAttribute<T>(this Type type) where T : Attribute
+        public static bool HasAttribute<T>(this Type type, bool inherit = true) where T : Attribute
         {
-            return type.GetCustomAttributes(typeof(T), inherit: true).Length > 0;
+            return type.GetCustomAttributes(typeof(T), inherit: inherit).Length > 0;
         }
 
-        public static T GetAttribute<T>(this Type type) where T : Attribute
+        public static T GetAttribute<T>(this Type type, bool inherit = true) where T : Attribute
         {
-            return type.GetCustomAttributes(typeof (T), inherit: true)[0] as T;
+            return type.GetCustomAttributes(typeof (T), inherit: inherit)[0] as T;
         }
     }
 }
