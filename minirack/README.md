@@ -33,6 +33,42 @@ _This library works on AppHarbor._
 </configuration>
 ```
 
+### [PreAppStart] usage
+
+```csharp
+using minirack;
+
+[PreAppStart]
+public class AnyClass
+{
+	public static void PreAppStart()
+	{
+		// Will be called _before_ the HttpApplication is created, for one time static
+		// init, warmup, caching, whatever.
+		
+		// If there's an IHttpModule you don't control the source of, you can
+		// still have it registered dynamically here:
+		DynamicModuleUtility.RegisterModule(typeof(ThirdPartyNonDynamicModule));
+		
+		// If you have control over the source, you could just put a [Pipeline] attribute
+		// on your IHttpModule class, and it will be self registering (using the same method above)
+		
+		// PreApp also is useful for querying types with attributes,
+		// in order to do [x] to/with them. Minirack helps query types easily:
+		Type[] mytypes = minirack.PipelineInstaller
+			// non system/MS types in the current asm, flattened
+			.GetUserTypes(t => // where predicate will filter by attribute and implements in this example
+				t.HasAttribute<YourAttribute>(inherit: false)
+				&& t.Implements<YourBaseClass>)
+			.ToArray();
+		foreach(Type mytype in mytypes)
+		{
+			// whatever
+		}
+	}
+}
+```
+
 ### [PostAppStart] usage
 
 ```csharp
@@ -43,9 +79,8 @@ public class AnyClass
 {
 	public static void PostAppStart()
 	{
-		// Will be called once after the HttpApplication is started
+		// Will be called once _after_ the HttpApplication is started
 		// (one time static init, warmup, caching, whatever)
 	}
 }
 ```
-
