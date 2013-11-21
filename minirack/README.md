@@ -1,13 +1,14 @@
 # MiniRack
-## Tiny aggregator for self-registering HttpModules
+## Tiny aggregator for self-registering HttpModules and pre/post app start code.
 
 ```
 PM> Install-Package MiniRack
 ```
 
-This micro library leans on WebActivator to simplify self-registering HttpModules. All it adds on top is an attribute
-that you can apply to IHttpModules to have them automatically registered at runtime by the participating ASP.NET 
-application.
+This micro library leans on **WebActivatorEx** to simplify self-registering HttpModules and pre/post app start code.
+All it adds on top is an attribute that you can apply to IHttpModules to have them automatically
+registered at runtime by the participating ASP.NET application.
+
 
 ### Usage
 
