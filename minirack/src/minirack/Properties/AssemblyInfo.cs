@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("minirack")]
+[assembly: AssemblyTitle("sam-minirack")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("334549e7-c415-4a56-ad68-a8c4cfa7125e")]
+[assembly: Guid("65A8A104-58F6-4ED8-ABE2-E2C5A1B8C4DD")]
 
 // Version information for an assembly consists of the following four values:
 //
