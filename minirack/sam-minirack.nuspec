@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+	<metadata>
+		<id>sam-minirack</id>
+		<version>1.0.1</version>
+		<authors>Daniel Crenna, Sam Meacham</authors>
+		<owners>Daniel Crenna</owners>
+		<summary>A tiny aggregator for self-registering HttpModules.</summary>
+		<description>A tiny aggregator for self-registering HttpModules.</description>
+		<language>en-US</language>
+		<projectUrl>https://github.com/sam-meacham/webstack/tree/master/minirack</projectUrl>
+		<licenseUrl>https://github.com/sam-meacham/webstack/blob/master/LICENSE.md</licenseUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<!--
+		<iconUrl>http://apitize.com.s3.amazonaws.com/logo_minirack.png</iconUrl>
+		-->
+		<tags>httpmodule registration dynamic preapplicationstartmethod webactivator webactivatorex preappstart postappstart</tags>
+
+		<dependencies>
+			<dependency id="WebActivatorEx" version="2.0.3" />
+			<dependency id="Microsoft.Web.Infrastructure" version="1.0.0.0" />
+		</dependencies>
+
+	</metadata>
+</package>
