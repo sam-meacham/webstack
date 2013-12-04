@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>sam.minirack</id>
+        <version>1.0.1</version>
+        <authors>Daniel Crenna,Sam Meacham</authors>
+        <owners>Sam Meacham</owners>
+        <licenseUrl>https://github.com/sam-meacham/webstack/blob/master/LICENSE.md</licenseUrl>
+        <projectUrl>https://github.com/sam-meacham/webstack/tree/master/minirack</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A tiny aggregator for self-registering HttpModules.</description>
+        <summary>A tiny aggregator for self-registering HttpModules.</summary>
+        <language>en-US</language>
+        <tags>httpmodule registration dynamic preapplicationstartmethod webactivator webactivatorex preappstart postappstart</tags>
+        <dependencies>
+            <group targetFramework=".NETFramework4.5.1">
+                <dependency id="WebActivatorEx" version="2.0.3" />
+                <dependency id="Microsoft.Web.Infrastructure" version="1.0.0.0" />
+            </group>
+        </dependencies>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.5.1" />
+            <frameworkAssembly assemblyName="System.Configuration" targetFramework=".NETFramework4.5.1" />
+            <frameworkAssembly assemblyName="System.Core" targetFramework=".NETFramework4.5.1" />
+            <frameworkAssembly assemblyName="System.Web" targetFramework=".NETFramework4.5.1" />
+        </frameworkAssemblies>
+    </metadata>
+</package>
