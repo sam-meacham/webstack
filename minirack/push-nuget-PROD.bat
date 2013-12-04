@@ -1,1 +1,1 @@
-NuGet.exe push sam.minirack.1.0.1.nupkg -Source http://dev-maps.cbre.com/nug/
+NuGet.exe push sam.minirack.*.nupkg -Source http://dev-maps.cbre.com/nug/
