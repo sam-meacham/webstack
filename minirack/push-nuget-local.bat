@@ -1,1 +1,1 @@
-NuGet.exe push sam.minirack.*.nupkg -Source http://localhost.cbre.com/nug/
+NuGet.exe push *.nupkg -Source http://localhost.cbre.com/nug/
