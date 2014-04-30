@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
         <id>sam.minirack</id>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
         <authors>Daniel Crenna,Sam Meacham</authors>
         <owners>Sam Meacham</owners>
         <licenseUrl>https://github.com/sam-meacham/webstack/blob/master/LICENSE.md</licenseUrl>

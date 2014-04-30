@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
@@ -58,11 +59,23 @@ namespace minirack
 
 	    public static Type[] GetUserTypes(Predicate<Type> where = null)
 	    {
-		    var types = GetNonSystemTypes()
-			    .SelectMany(asm => asm.GetTypes())
-			    .Where(t => where == null || where(t))
-			    .ToArray();
-		    return types;
+			Assembly[] asms = GetNonSystemTypes();
+			var flatTypes = new List<Type>();
+			foreach (var asm in asms)
+			{
+				try
+				{
+					var types = asm.GetTypes()
+						.Where(t => where == null || where(t));
+					flatTypes.AddRange(types);
+				}
+				catch
+				{
+					// Seems that some assemblies might throw exceptions when you call .GetTypes() (Allocate.Net.dll...)
+					// Those types aren't going to contain what we're looking for here anyway, so we can safely skip them
+				}
+			}
+			return flatTypes.ToArray();
 	    }
 
         private static void RegisterPipelineModules()
